@@ -23,15 +23,46 @@ def filter_out_boards(string_boards):
 
 def check_if_bingo(board):
 
+    board_shape = 5
     # Check rows
     for row in board:
-        if ''.join(element for element in row) == 'XXXXX':
-            return True, board
+        if sum(row) == board_shape:
+            return True
     # Check columns
     for column in board.T:
-        if ''.join(element for element in column) == 'XXXXX':
-            return True, board
-    return False, board
+        if sum(column) == board_shape:
+            return True
+    return False
+
+
+def check_if_number_in_board(board, score_board, move):
+
+    rows, columns = np.where(board == int(move))
+    if len(rows):
+        for idx, _ in enumerate(rows):
+            score_board[rows[idx], columns[idx]] = 1
+    return score_board
+
+
+def evaluate_boards(boards, score_boards, moves):
+
+    for move in moves:
+        for idx, board in enumerate(boards):
+            score_boards[idx] = check_if_number_in_board(np.copy(board), np.copy(score_boards[idx]), move)
+        for idx, score_board in enumerate(score_boards):
+            bingo = check_if_bingo(np.copy(score_board))
+            if bingo:
+                return get_board_sum(np.copy(boards[idx]), np.copy(score_board), move)
+    return 'Did not find bingo, sad!'
+
+
+def get_board_sum(board, score_board, move):
+    rows, columns = np.where(score_board == 0)
+    total_sum = 0
+    if len(rows):
+        for idx, _ in enumerate(rows):
+            total_sum += board[rows[idx], columns[idx]]
+    return total_sum * int(move)
 
 
 def main():
@@ -40,8 +71,10 @@ def main():
     with open(filename, 'r') as f:
         input_array = f.readlines()
 
-    moves = input_array[0]
+    moves = input_array[0].rstrip("\n").split(",")
     boards = filter_out_boards(input_array[2:])
+    score_boards = np.zeros(boards.shape)
+    print(evaluate_boards(np.copy(boards), np.copy(score_boards), moves))
 
 
 if __name__ == "__main__":
