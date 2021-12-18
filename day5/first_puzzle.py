@@ -1,4 +1,3 @@
-import numpy as np
 from grid import Grid
 
 
@@ -16,11 +15,6 @@ def format_input_line(lines):
     return starts, ends
 
 
-def get_grid(starts, ends):
-    max_numb = np.max([starts, ends])
-    return np.zeros((max_numb, max_numb))
-
-
 def main():
     filename = "input5.txt"
     with open(filename, 'r') as f:
@@ -30,8 +24,6 @@ def main():
     my_grid = Grid(starts=starts, ends=ends)
     my_grid.add_lines_to_grid()
     print(my_grid.get_number_above_threshold())
-    print("")
-
 
 if __name__ == "__main__":
     main()

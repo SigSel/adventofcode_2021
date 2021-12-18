@@ -24,6 +24,37 @@ class Grid:
                 for i in line:
                     self.internal_grid[i, y1] += 1
 
+    def add_all_lines_to_grid(self):
+        self.add_lines_to_grid()
+
+        for idx, _ in enumerate(self.starts):
+            x1, y1 = self.starts[idx]
+            x2, y2 = self.ends[idx]
+
+            if x1 != x2 and y1 != y2:
+                if x1 < x2:
+                    if y1 < y2:
+                        while x1 <= x2 and y1 <= y2:
+                            self.internal_grid[x1, y1] += 1
+                            x1 += 1
+                            y1 += 1
+                    else:
+                        while x1 <= x2 and y1 >= y2:
+                            self.internal_grid[x1, y1] += 1
+                            x1 += 1
+                            y1 -= 1
+                else:
+                    if y1 < y2:
+                        while x1 >= x2 and y1 <= y2:
+                            self.internal_grid[x1, y1] += 1
+                            x1 -= 1
+                            y1 += 1
+                    else:
+                        while x1 >= x2 and y1 >= y2:
+                            self.internal_grid[x1, y1] += 1
+                            x1 -= 1
+                            y1 -= 1
+
     def get_number_above_threshold(self, threshold=2):
         count = np.count_nonzero(self.internal_grid >= threshold)
         return count
